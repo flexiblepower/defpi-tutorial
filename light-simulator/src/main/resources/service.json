@@ -1,0 +1,99 @@
+{
+  "name": "Light Simulator",
+  "version": "0.1",
+  "parameters": [
+  	{
+  	  "id": "minimumOnTime",
+  	  "name": "Minimum ON time (seconds)",
+  	  "type": "integer",
+  	  "default": 10
+  	},
+  	{
+  	  "id": "minimumOffTime",
+  	  "name": "Minimum OFF time (seconds)",
+  	  "type": "integer",
+  	  "default": 10
+  	},
+  	{
+  	  "id": "maximumPower",
+  	  "name": "Power consumption in ON mode (Watt)",
+  	  "type": "double",
+  	  "default": 40.0
+  	},
+  	{
+  	  "id": "minimumPower",
+  	  "name": "Power consumption in OFF mode (Watt)",
+  	  "type": "double",
+  	  "default": 0.0
+  	}
+  ],
+  "interfaces": [
+    {
+      "name": "widget",
+      "autoConnect": false,
+      "allowMultiple": false,
+      "interfaceVersions": [
+        {
+          "versionName": "http",
+          "type": "proto",
+          "location": "https://raw.githubusercontent.com/defpi/interfaces/master/defpi/HTTP.proto",
+          "receives": [ "HTTPRequest" ],
+          "sends": [ "HTTPResponse" ]
+        }
+      ]
+    },
+    {
+      "name": "Inflexible Controller",
+      "autoConnect": true,
+      "allowMultiple": false,
+      "interfaceVersions": [
+        {
+          "versionName": "efi 2.0",
+          "type": "xsd",
+          "location": "https://raw.githubusercontent.com/flexiblepower/efi/master/schema/efi-2.0.xsd",
+          "receives": [
+            "InflexibleInstruction",
+            "InstructionRevoke"
+          ],
+          "sends": [
+            "InflexibleRegistration",
+            "InflexibleCurtailmentOptions",
+            "InflexibleForecast",
+            "Measurement",
+            "InstructionStatusUpdate",
+            "FlexibilityRevoke"
+          ]
+        },
+        {
+          "versionName": "minimal efi 2.0",
+          "type": "xsd",
+          "location": "https://raw.githubusercontent.com/flexiblepower/efi/master/schema/efi-2.0.xsd",
+          "receives": [
+            "InflexibleInstruction"
+          ],
+          "sends": [
+            "InflexibleRegistration",
+            "InflexibleCurtailmentOptions",
+            "Measurement"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Observation publisher",
+      "autoConnect": true,
+      "allowMultiple": true,
+      "interfaceVersions": [
+        {
+          "versionName": "1",
+          "type": "proto",
+          "location": "https://raw.githubusercontent.com/defpi/interfaces/master/defpi-ext/Observation.proto",
+          "sends": [
+            "Observation"
+          ],
+          "receives": []
+        }
+      ]
+    }
+  ]
+}

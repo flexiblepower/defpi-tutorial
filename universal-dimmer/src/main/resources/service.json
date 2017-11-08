@@ -1,0 +1,26 @@
+{
+  "name": "Universal Dimmer",
+  "version": "2017",
+  "interfaces": [
+    {
+      "name": "Inflexible Controller",
+      "autoConnect": true,
+      "allowMultiple": true,
+      "interfaceVersions": [
+        {
+          "versionName": "efi 2.0",
+          "type": "xsd",
+          "location": "https://raw.githubusercontent.com/flexiblepower/efi/master/schema/efi-2.0.xsd",
+          "receives": [
+            "InflexibleRegistration",
+            "InflexibleCurtailmentOptions",
+            "Measurement"
+          ],
+          "sends": [
+            "InflexibleInstruction"
+          ]
+        }
+      ]
+    }
+  ]
+}
