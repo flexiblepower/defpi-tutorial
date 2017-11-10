@@ -10,6 +10,7 @@ import javax.xml.datatype.DatatypeFactory;
 import org.flexiblepower.defpi.universaldimmer.UniversalDimmer;
 import org.flexiblepower.defpi.universaldimmer.inflexible_controller.efi_20.xml.CurtailmentProfile;
 import org.flexiblepower.defpi.universaldimmer.inflexible_controller.efi_20.xml.CurtailmentProfileElement;
+import org.flexiblepower.defpi.universaldimmer.inflexible_controller.efi_20.xml.CurtailmentQuantity;
 import org.flexiblepower.defpi.universaldimmer.inflexible_controller.efi_20.xml.InflexibleCurtailmentOptions;
 import org.flexiblepower.defpi.universaldimmer.inflexible_controller.efi_20.xml.InflexibleInstruction;
 import org.flexiblepower.defpi.universaldimmer.inflexible_controller.efi_20.xml.InflexibleRegistration;
@@ -57,10 +58,18 @@ public class InflexibleController_efi20ConnectionHandlerImpl implements Inflexib
     @Override
     public void handleInflexibleCurtailmentOptionsMessage(final InflexibleCurtailmentOptions message) {
         try {
-            final CurtailmentProfileElement curtailMent = new CurtailmentProfileElement().withValue(0)
+            final double minimalPower = message.getCurtailmentOptions()
+                    .getCurtailmentOption()
+                    .get(0)
+                    .getCurtailmentRange()
+                    .get(0)
+                    .getLowerBound();
+
+            final CurtailmentProfileElement curtailMent = new CurtailmentProfileElement().withValue(minimalPower)
                     .withDuration(DatatypeFactory.newInstance().newDuration(Duration.ofDays(1).toMillis()));
 
             final CurtailmentProfile profile = new CurtailmentProfile().withStartTime(message.getValidFrom())
+                    .withCurtailmentQuantity(CurtailmentQuantity.ELECTRICITY_POWER)
                     .withCurtailmentProfileElement(curtailMent);
 
             final InflexibleInstruction instruction = new InflexibleInstruction().withEfiVersion("2.0")

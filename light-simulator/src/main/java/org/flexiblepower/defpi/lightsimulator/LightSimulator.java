@@ -154,7 +154,9 @@ public class LightSimulator implements Service<LightSimulatorConfiguration> {
         this.activeCurtailmentThread = Thread.currentThread();
 
         // Trigger the start sign
-        updateSender.sendUpdate(InstructionStatus.STARTED);
+        if (updateSender != null) {
+            updateSender.sendUpdate(InstructionStatus.STARTED);
+        }
 
         for (final CurtailmentProfileElement element : curtailMent.getCurtailmentProfileElement()) {
             final long curtailmentTimeMillis = element.getDuration().getTimeInMillis(new GregorianCalendar());
@@ -170,7 +172,9 @@ public class LightSimulator implements Service<LightSimulatorConfiguration> {
         }
 
         // Finished curtailing... go back to maximum power
-        updateSender.sendUpdate(InstructionStatus.SUCCEEDED);
+        if (updateSender != null) {
+            updateSender.sendUpdate(InstructionStatus.SUCCEEDED);
+        }
         this.setPowerUsage(this.configuration.getMaximumPower());
     }
 

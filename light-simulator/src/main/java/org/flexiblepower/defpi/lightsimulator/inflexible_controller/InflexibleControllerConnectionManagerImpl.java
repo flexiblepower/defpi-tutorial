@@ -28,6 +28,8 @@ import org.flexiblepower.defpi.lightsimulator.inflexible_controller.efi_20.xml.S
 import org.flexiblepower.defpi.lightsimulator.inflexible_controller.minimal_efi_20.InflexibleController_minimalEfi20ConnectionHandler;
 import org.flexiblepower.defpi.lightsimulator.inflexible_controller.minimal_efi_20.InflexibleController_minimalEfi20ConnectionHandlerImpl;
 import org.flexiblepower.service.Connection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * InflexibleControllerConnectionManagerImpl
@@ -42,6 +44,7 @@ import org.flexiblepower.service.Connection;
 @Generated(value = "org.flexiblepower.plugin.servicegen", date = "Nov 8, 2017 4:10:46 PM")
 public class InflexibleControllerConnectionManagerImpl implements InflexibleControllerConnectionManager {
 
+    private final Logger log = LoggerFactory.getLogger(InflexibleControllerConnectionManagerImpl.class);
     private final LightSimulator service;
     private final DatatypeFactory dataTypeFactory;
 
@@ -135,13 +138,20 @@ public class InflexibleControllerConnectionManagerImpl implements InflexibleCont
             if ((curtailment.getDuration().getTimeInMillis(startTime) < (config.getMinimumOffTime() * 1000))
                     || (curtailment.getValue() > config.getMaximumPower())
                     || (curtailment.getValue() < config.getMinimumPower())) {
-                stateSender.sendUpdate(InstructionStatus.REJECTED);
+                if (stateSender != null) {
+                    this.log.info("Rejecting curtailment for duration {} and power {}",
+                            curtailment.getDuration(),
+                            curtailment.getValue());
+                    stateSender.sendUpdate(InstructionStatus.REJECTED);
+                }
                 return;
             }
         }
 
         this.service.addCurtailMent(message.getInstructionId(), profile, stateSender);
-        stateSender.sendUpdate(InstructionStatus.ACCEPTED);
+        if (stateSender != null) {
+            stateSender.sendUpdate(InstructionStatus.ACCEPTED);
+        }
     }
 
 }
