@@ -69,6 +69,11 @@ public class ServiceTest {
             return 2.0;
         }
 
+        @Override
+        public long getPublishInterval() {
+            return 60;
+        }
+
     };
 
     private final DefPiParameters testParameters = new DefPiParameters("",

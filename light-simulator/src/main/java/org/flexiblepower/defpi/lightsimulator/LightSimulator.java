@@ -70,6 +70,10 @@ public class LightSimulator implements Service<LightSimulatorConfiguration> {
         this.modify(config);
         this.params = parameters;
         this.setPowerUsage(config.getMaximumPower());
+        this.scheduler.scheduleAtFixedRate(() -> this.publishObservation(),
+                config.getPublishInterval() / 2,
+                config.getPublishInterval(),
+                TimeUnit.SECONDS);
     }
 
     @Override
@@ -184,13 +188,15 @@ public class LightSimulator implements Service<LightSimulatorConfiguration> {
     private void setPowerUsage(final double power) {
         this.log.info("Updating power usage to {} W", power);
         this.currentPower = power;
+        this.publishObservation();
+    }
 
+    private void publishObservation() {
         this.log.debug("Sending observation to {} observers", this.observers.size());
-        final Observation observation = this.createPowerObservation();
-        this.observers.forEach(op -> op.observe(observation));
+        this.observers.forEach(op -> op.observe(this.createPowerObservation()));
 
-        final Measurement measurement = this.createMeasurement();
-        this.efiHandlers.forEach(eh -> eh.publishMeasurement(measurement));
+        this.log.debug("Sending measurement to {} efi sessions", this.efiHandlers.size());
+        this.efiHandlers.forEach(eh -> eh.publishMeasurement(this.createMeasurement()));
     }
 
     private Measurement createMeasurement() {

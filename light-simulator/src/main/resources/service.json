@@ -25,6 +25,12 @@
   	  "name": "Power consumption in OFF mode (Watt)",
   	  "type": "double",
   	  "default": 0.0
+  	},
+  	{
+  	  "id": "publishInterval",
+  	  "name": "Power measurement and observation publish interval (seconds)",
+  	  "type": "long",
+  	  "default": 60
   	}
   ],
   "interfaces": [
