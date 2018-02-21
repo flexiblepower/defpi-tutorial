@@ -1,5 +1,6 @@
 package org.flexiblepower.defpi.universaldimmer.inflexible_controller.efi_20;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.util.UUID;
 
@@ -79,6 +80,8 @@ public class InflexibleController_efi20ConnectionHandlerImpl implements Inflexib
             this.connection.send(instruction);
         } catch (final DatatypeConfigurationException e) {
             throw new RuntimeException(e.getMessage());
+        } catch (final IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,5 +1,7 @@
 package org.flexiblepower.defpi.lightsimulator.inflexible_controller.efi_20;
 
+import java.io.IOException;
+
 import javax.annotation.Generated;
 
 import org.flexiblepower.defpi.lightsimulator.inflexible_controller.InflexibleControllerConnectionManagerImpl;
@@ -48,9 +50,13 @@ public class InflexibleController_efi20ConnectionHandlerImpl
     @Override
     public void handleInstructionRevokeMessage(final InstructionRevoke message) {
         this.log.info("Received instruction revoke for {}", message.getInstructionId());
-        if (this.manager.revokeInstruction(message.getInstructionId())) {
-            this.connection.send(new InstructionStatusUpdate().withInstructionId(message.getInstructionId())
-                    .withStatus(InstructionStatus.ABORTED));
+        if (this.manager.revokeInstruction(message.getInstructionId()) && this.connection.isConnected()) {
+            try {
+                this.connection.send(new InstructionStatusUpdate().withInstructionId(message.getInstructionId())
+                        .withStatus(InstructionStatus.ABORTED));
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -59,14 +65,28 @@ public class InflexibleController_efi20ConnectionHandlerImpl
         this.log.info("Received instruction {} for {}",
                 message.getInstructionId(),
                 message.getCurtailmentProfile().getCurtailmentQuantity());
-        final InstructionStatusSender stateSender = (status) -> this.connection
-                .send(new InstructionStatusUpdate().withInstructionId(message.getInstructionId()).withStatus(status));
+        final InstructionStatusSender stateSender = (status) -> {
+            if (this.connection.isConnected()) {
+                try {
+                    this.connection.send(new InstructionStatusUpdate().withInstructionId(message.getInstructionId())
+                            .withStatus(status));
+                } catch (final IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
         this.manager.handleInstruction(message, stateSender);
     }
 
     @Override
     public void publishMeasurement(final Measurement measurement) {
-        this.connection.send(measurement);
+        if (this.connection.isConnected()) {
+            try {
+                this.connection.send(measurement);
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.flexiblepower.defpi.lightsimulator.inflexible_controller;
 
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -97,7 +98,6 @@ public class InflexibleControllerConnectionManagerImpl implements InflexibleCont
                 .withInstructionProcessingDelay(this.dataTypeFactory.newDuration(10))
                 .withDeviceDescription(deviceDescription)
                 .withSupportedCommodities(commodities);
-        connection.send(registration);
 
         final LightSimulatorConfiguration config = this.service.getConfig();
         final CurtailmentOptions options = new CurtailmentOptions().withCurtailmentOption(new CurtailmentOption()
@@ -112,7 +112,12 @@ public class InflexibleControllerConnectionManagerImpl implements InflexibleCont
                 .withValidFrom(this.dataTypeFactory.newXMLGregorianCalendar(startTime))
                 .withCurtailmentOptions(options);
 
-        connection.send(curtailmentOptions);
+        try {
+            connection.send(registration);
+            connection.send(curtailmentOptions);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

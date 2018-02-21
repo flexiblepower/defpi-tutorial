@@ -1,5 +1,7 @@
 package org.flexiblepower.defpi.lightsimulator.observation_publisher._1;
 
+import java.io.IOException;
+
 import javax.annotation.Generated;
 
 import org.flexiblepower.defpi.lightsimulator.LightSimulator;
@@ -38,7 +40,13 @@ public class ObservationPublisher_1ConnectionHandlerImpl
 
     @Override
     public void observe(final Observation o) {
-        this.connection.send(o);
+        if (this.connection.isConnected()) {
+            try {
+                this.connection.send(o);
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
