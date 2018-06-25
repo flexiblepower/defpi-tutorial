@@ -18,7 +18,7 @@ LABEL org.flexiblepower.interfaces='[ { \
   "serviceId" : "UniversalDimmer", \ 
   "interfaceVersions" : [ { \ 
     "versionName" : "efi 2.0", \ 
-    "receivesHash" : "6f85a6fd68a3ad9ab675848cf3a7dc31e5a87e8678435ec6dc847119504e5587", \ 
+    "receivesHash" : "2d8647b697819ff9dd7dfc4f005d580df7accfa20dc01fc39f7d1e3bc901b346", \ 
     "sendsHash" : "31fffa222831723a1b2ceaec406ed47140029d3230971c953b8857946a8fa89a" \ 
   } ], \ 
   "allowMultiple" : true, \ 
