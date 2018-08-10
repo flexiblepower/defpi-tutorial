@@ -1,7 +1,7 @@
 # service/model/InflexibleControllerEfi20/xsd.py
 # -*- coding: utf-8 -*-
 # PyXB bindings for NM:b550fb16b19cc058aca9062a23ea1ae456ced48d
-# Generated 2018-08-10 09:05:39.930062 by PyXB version 1.2.6 using Python 3.6.6.final.0
+# Generated 2018-08-10 09:57:06.989505 by PyXB version 1.2.6 using Python 3.6.6.final.0
 # Namespace http://www.flexiblepower.org/efi-2
 
 from __future__ import unicode_literals
@@ -14,7 +14,7 @@ import pyxb.utils.domutils
 import sys
 import pyxb.utils.six as _six
 # Unique identifier for bindings created at the same time
-_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:8d6f1928-9c7c-11e8-8822-0242ac110003')
+_GenerationUID = pyxb.utils.utility.UniqueIdentifier('urn:uuid:bd54841e-9c83-11e8-9b68-0242ac110004')
 
 # Version of PyXB used to generate the bindings
 _PyXBVersion = '1.2.6'
