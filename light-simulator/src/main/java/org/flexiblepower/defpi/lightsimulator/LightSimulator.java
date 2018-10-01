@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -52,6 +53,8 @@ public class LightSimulator implements Service<LightSimulatorConfiguration> {
     private LightSimulatorConfiguration configuration;
     private DefPiParameters params;
 
+    private Future<?> observationFuture;
+
     private Thread activeCurtailmentThread;
 
     private final Collection<ObservationPublisher> observers = new LinkedList<>();
@@ -67,18 +70,24 @@ public class LightSimulator implements Service<LightSimulatorConfiguration> {
 
     @Override
     public void init(final LightSimulatorConfiguration config, final DefPiParameters parameters) {
-        this.modify(config);
         this.params = parameters;
+        this.modify(config);
         this.setPowerUsage(config.getMaximumPower());
-        this.scheduler.scheduleAtFixedRate(() -> this.publishObservation(),
-                config.getPublishInterval() / 2,
-                config.getPublishInterval(),
-                TimeUnit.SECONDS);
     }
 
     @Override
     public void modify(final LightSimulatorConfiguration config) {
         this.configuration = config;
+
+        if (this.observationFuture != null) {
+            this.observationFuture.cancel(false);
+            this.observationFuture = null;
+        }
+
+        this.observationFuture = this.scheduler.scheduleAtFixedRate(() -> this.publishObservation(),
+                config.getPublishInterval() / 2,
+                config.getPublishInterval(),
+                TimeUnit.SECONDS);
     }
 
     @Override
