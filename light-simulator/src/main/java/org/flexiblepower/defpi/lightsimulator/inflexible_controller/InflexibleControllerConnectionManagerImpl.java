@@ -130,7 +130,7 @@ public class InflexibleControllerConnectionManagerImpl implements InflexibleCont
 
     /**
      * @param message
-     * @param startSign
+     * @param stateSender
      */
     public void handleInstruction(final InflexibleInstruction message, final InstructionStatusSender stateSender) {
         final CurtailmentProfile profile = message.getCurtailmentProfile();
