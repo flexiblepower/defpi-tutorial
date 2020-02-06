@@ -28,10 +28,10 @@ import org.flexiblepower.defpi.lightsimulator.observation_publisher._1.proto.Obs
 import org.flexiblepower.proto.ConnectionProto.ConnectionState;
 import org.flexiblepower.service.Connection;
 import org.flexiblepower.service.DefPiParameters;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * ServiceTest
@@ -130,12 +130,12 @@ public class MinimalEFITest {
     InflexibleRegistration registration;
     InflexibleCurtailmentOptions curtailmentOptions;
 
-    @BeforeClass
+    @BeforeAll
     public static void initClass() throws DatatypeConfigurationException {
         MinimalEFITest.factory = DatatypeFactory.newInstance();
     }
 
-    @Before
+    @BeforeEach
     public void init() {
         final LightSimulator simulator = new LightSimulator();
         simulator.init(this.testConfig, this.testParameters);
@@ -147,9 +147,9 @@ public class MinimalEFITest {
         observationManager.build1(this.testConnection);
         this.lastObservation = null;
 
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
-        Assert.assertEquals("Light Simulator", this.registration.getDeviceDescription().getLabel());
-        Assert.assertEquals(this.testConfig.getMaximumPower(),
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals("Light Simulator", this.registration.getDeviceDescription().getLabel());
+        Assertions.assertEquals(this.testConfig.getMaximumPower(),
                 this.curtailmentOptions.getCurtailmentOptions()
                         .getCurtailmentOption()
                         .get(0)
@@ -163,13 +163,13 @@ public class MinimalEFITest {
     public void runTest() throws InterruptedException {
         this.sendCurtailmentInstruction(20.0, Duration.ofMillis(100), Duration.ofSeconds(1));
         Thread.sleep(150);
-        Assert.assertEquals(20.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
-        Assert.assertEquals(20, this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(20.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
+        Assertions.assertEquals(20, this.lastMeasuredPower, 1e-6);
         Thread.sleep(1000);
-        Assert.assertEquals(this.testConfig.getMaximumPower(),
+        Assertions.assertEquals(this.testConfig.getMaximumPower(),
                 this.lastObservation.getNumberDatapoints(0).getValue(),
                 1e-6);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
     }
 
     @Test
@@ -177,38 +177,38 @@ public class MinimalEFITest {
         // Value too low
         this.sendCurtailmentInstruction(0, Duration.ofMillis(0), Duration.ofMillis(2));
         Thread.sleep(100);
-        Assert.assertNull(this.lastObservation);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertNull(this.lastObservation);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
 
         // Value too high
         this.sendCurtailmentInstruction(52.0, Duration.ofMillis(0), Duration.ofSeconds(1));
         Thread.sleep(100);
-        Assert.assertNull(this.lastObservation);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertNull(this.lastObservation);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
 
         // Duration too short
         this.sendCurtailmentInstruction(2.0, Duration.ofMillis(0), Duration.ofMillis(800));
         Thread.sleep(100);
-        Assert.assertNull(this.lastObservation);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertNull(this.lastObservation);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
     }
 
     @Test
     public void runExtendTest() throws InterruptedException {
         this.sendCurtailmentInstruction(2.0, Duration.ofMillis(100), Duration.ofSeconds(1));
         Thread.sleep(150);
-        Assert.assertEquals(2.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
-        Assert.assertEquals(2, this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(2.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
+        Assertions.assertEquals(2, this.lastMeasuredPower, 1e-6);
         Thread.sleep(700);
         this.sendCurtailmentInstruction(10.0, Duration.ofMillis(0), Duration.ofSeconds(1));
         Thread.sleep(10);
-        Assert.assertEquals(10.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
-        Assert.assertEquals(10.0, this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(10.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
+        Assertions.assertEquals(10.0, this.lastMeasuredPower, 1e-6);
         Thread.sleep(1500);
-        Assert.assertEquals(this.testConfig.getMaximumPower(),
+        Assertions.assertEquals(this.testConfig.getMaximumPower(),
                 this.lastObservation.getNumberDatapoints(0).getValue(),
                 1e-6);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
     }
 
     private String sendCurtailmentInstruction(final double curtailmentValue,

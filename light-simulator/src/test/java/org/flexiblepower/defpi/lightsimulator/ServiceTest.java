@@ -31,10 +31,10 @@ import org.flexiblepower.defpi.lightsimulator.observation_publisher._1.proto.Obs
 import org.flexiblepower.proto.ConnectionProto.ConnectionState;
 import org.flexiblepower.service.Connection;
 import org.flexiblepower.service.DefPiParameters;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * ServiceTest
@@ -136,12 +136,12 @@ public class ServiceTest {
     InflexibleRegistration registration;
     InflexibleCurtailmentOptions curtailmentOptions;
 
-    @BeforeClass
+    @BeforeAll
     public static void initClass() throws DatatypeConfigurationException {
         ServiceTest.factory = DatatypeFactory.newInstance();
     }
 
-    @Before
+    @BeforeEach
     public void init() {
         final LightSimulator simulator = new LightSimulator();
         simulator.init(this.testConfig, this.testParameters);
@@ -153,9 +153,9 @@ public class ServiceTest {
         observationManager.build1(this.testConnection);
         this.lastObservation = null;
 
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
-        Assert.assertEquals("Light Simulator", this.registration.getDeviceDescription().getLabel());
-        Assert.assertEquals(this.testConfig.getMaximumPower(),
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals("Light Simulator", this.registration.getDeviceDescription().getLabel());
+        Assertions.assertEquals(this.testConfig.getMaximumPower(),
                 this.curtailmentOptions.getCurtailmentOptions()
                         .getCurtailmentOption()
                         .get(0)
@@ -168,17 +168,17 @@ public class ServiceTest {
     @Test
     public void runTest() throws InterruptedException {
         this.sendCurtailmentInstruction(20.0, Duration.ofMillis(100), Duration.ofSeconds(1));
-        Assert.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
         Thread.sleep(150);
-        Assert.assertEquals(InstructionStatus.STARTED, this.lastStatus);
-        Assert.assertEquals(20.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
-        Assert.assertEquals(20, this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(InstructionStatus.STARTED, this.lastStatus);
+        Assertions.assertEquals(20.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
+        Assertions.assertEquals(20, this.lastMeasuredPower, 1e-6);
         Thread.sleep(1000);
-        Assert.assertEquals(InstructionStatus.SUCCEEDED, this.lastStatus);
-        Assert.assertEquals(this.testConfig.getMaximumPower(),
+        Assertions.assertEquals(InstructionStatus.SUCCEEDED, this.lastStatus);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(),
                 this.lastObservation.getNumberDatapoints(0).getValue(),
                 1e-6);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
     }
 
     @Test
@@ -186,101 +186,101 @@ public class ServiceTest {
         // Value too low
         this.lastStatus = null;
         this.sendCurtailmentInstruction(0, Duration.ofMillis(0), Duration.ofMillis(2));
-        Assert.assertEquals(InstructionStatus.REJECTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.REJECTED, this.lastStatus);
 
         // Value too high
         this.lastStatus = null;
         this.sendCurtailmentInstruction(52.0, Duration.ofMillis(0), Duration.ofSeconds(1));
-        Assert.assertEquals(InstructionStatus.REJECTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.REJECTED, this.lastStatus);
 
         // Duration too short
         this.lastStatus = null;
         this.sendCurtailmentInstruction(2.0, Duration.ofMillis(0), Duration.ofMillis(800));
-        Assert.assertEquals(InstructionStatus.REJECTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.REJECTED, this.lastStatus);
 
         // No changes since init...
-        Assert.assertNull(this.lastObservation);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertNull(this.lastObservation);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
     }
 
     @Test
     public void runPreemptiveRevokeTest() throws InterruptedException {
         final String instructionId = this
                 .sendCurtailmentInstruction(2.0, Duration.ofMillis(100), Duration.ofSeconds(1));
-        Assert.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
         this.sendRevokeInstruction(instructionId);
         Thread.sleep(10);
-        Assert.assertEquals(InstructionStatus.ABORTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.ABORTED, this.lastStatus);
         this.lastStatus = null;
         Thread.sleep(1000);
-        Assert.assertNull(this.lastStatus);
-        Assert.assertNull(this.lastObservation);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertNull(this.lastStatus);
+        Assertions.assertNull(this.lastObservation);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
     }
 
     @Test
     public void runInvalidRevokeTest() throws InterruptedException {
         this.sendCurtailmentInstruction(12.0, Duration.ofMillis(100), Duration.ofSeconds(1));
-        Assert.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
         this.sendRevokeInstruction("123456");
-        Assert.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
         Thread.sleep(150);
-        Assert.assertEquals(InstructionStatus.STARTED, this.lastStatus);
-        Assert.assertEquals(12.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
-        Assert.assertEquals(12, this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(InstructionStatus.STARTED, this.lastStatus);
+        Assertions.assertEquals(12.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
+        Assertions.assertEquals(12, this.lastMeasuredPower, 1e-6);
         Thread.sleep(1000);
-        Assert.assertEquals(InstructionStatus.SUCCEEDED, this.lastStatus);
-        Assert.assertEquals(this.testConfig.getMaximumPower(),
+        Assertions.assertEquals(InstructionStatus.SUCCEEDED, this.lastStatus);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(),
                 this.lastObservation.getNumberDatapoints(0).getValue(),
                 1e-6);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
     }
 
     @Test
     public void runRunningRevokeTest() throws InterruptedException {
         final String instructionId = this
                 .sendCurtailmentInstruction(5.0, Duration.ofMillis(100), Duration.ofSeconds(1));
-        Assert.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
         Thread.sleep(150);
-        Assert.assertEquals(InstructionStatus.STARTED, this.lastStatus);
-        Assert.assertEquals(5.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
-        Assert.assertEquals(5, this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(InstructionStatus.STARTED, this.lastStatus);
+        Assertions.assertEquals(5.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
+        Assertions.assertEquals(5, this.lastMeasuredPower, 1e-6);
         this.sendRevokeInstruction(instructionId);
         Thread.sleep(10);
-        Assert.assertEquals(InstructionStatus.ABORTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.ABORTED, this.lastStatus);
         this.lastStatus = null;
         Thread.sleep(1000);
-        Assert.assertNull(this.lastStatus);
-        Assert.assertEquals(this.testConfig.getMaximumPower(),
+        Assertions.assertNull(this.lastStatus);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(),
                 this.lastObservation.getNumberDatapoints(0).getValue(),
                 1e-6);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
     }
 
     @Test
     public void runExtendTest() throws InterruptedException {
         this.sendCurtailmentInstruction(2.0, Duration.ofMillis(100), Duration.ofSeconds(1));
-        Assert.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
         Thread.sleep(150);
-        Assert.assertEquals(InstructionStatus.STARTED, this.lastStatus);
-        Assert.assertEquals(2.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
-        Assert.assertEquals(2, this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(InstructionStatus.STARTED, this.lastStatus);
+        Assertions.assertEquals(2.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
+        Assertions.assertEquals(2, this.lastMeasuredPower, 1e-6);
         Thread.sleep(700);
         this.sendCurtailmentInstruction(10.0, Duration.ofMillis(0), Duration.ofSeconds(1));
-        Assert.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
+        Assertions.assertEquals(InstructionStatus.ACCEPTED, this.lastStatus);
         Thread.sleep(10);
-        Assert.assertEquals(InstructionStatus.STARTED, this.lastStatus);
-        Assert.assertEquals(10.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
-        Assert.assertEquals(10.0, this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(InstructionStatus.STARTED, this.lastStatus);
+        Assertions.assertEquals(10.0, this.lastObservation.getNumberDatapoints(0).getValue(), 1e-6);
+        Assertions.assertEquals(10.0, this.lastMeasuredPower, 1e-6);
         this.lastStatus = null;
         Thread.sleep(500);
-        Assert.assertNull(this.lastStatus);
+        Assertions.assertNull(this.lastStatus);
         Thread.sleep(1000);
-        Assert.assertEquals(InstructionStatus.SUCCEEDED, this.lastStatus);
-        Assert.assertEquals(this.testConfig.getMaximumPower(),
+        Assertions.assertEquals(InstructionStatus.SUCCEEDED, this.lastStatus);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(),
                 this.lastObservation.getNumberDatapoints(0).getValue(),
                 1e-6);
-        Assert.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
+        Assertions.assertEquals(this.testConfig.getMaximumPower(), this.lastMeasuredPower, 1e-6);
     }
 
     private String sendCurtailmentInstruction(final double curtailmentValue,

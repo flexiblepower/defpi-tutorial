@@ -88,8 +88,7 @@ public class InflexibleController_minimalEfi20ConnectionHandlerImpl
 
     @Override
     public void terminated() {
-        // TODO Auto-generated method stub
-
+        this.manager.terminate(this);
     }
 
 }

@@ -159,4 +159,11 @@ public class InflexibleControllerConnectionManagerImpl implements InflexibleCont
         }
     }
 
+    /**
+     * @param inflexibleController_efi20ConnectionHandlerImpl
+     */
+    public void terminate(final MeasurementPublisher mp) {
+        this.service.removeMeasurementPublisher(mp);
+    }
+
 }

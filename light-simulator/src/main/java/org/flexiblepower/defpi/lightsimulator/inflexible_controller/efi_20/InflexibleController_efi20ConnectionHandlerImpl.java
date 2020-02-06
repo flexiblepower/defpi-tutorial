@@ -115,8 +115,7 @@ public class InflexibleController_efi20ConnectionHandlerImpl
 
     @Override
     public void terminated() {
-        // TODO Auto-generated method stub
-
+        this.manager.terminate(this);
     }
 
 }
