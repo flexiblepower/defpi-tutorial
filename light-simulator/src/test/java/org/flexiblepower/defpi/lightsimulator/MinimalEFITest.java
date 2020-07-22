@@ -121,6 +121,11 @@ public class MinimalEFITest {
             return null;
         }
 
+        @Override
+        public String remoteProcessName() {
+            return null;
+        }
+
     };
 
     private InflexibleController_minimalEfi20ConnectionHandler handler;

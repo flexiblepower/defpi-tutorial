@@ -126,6 +126,11 @@ public class ServiceTest {
             return null;
         }
 
+        @Override
+        public String remoteProcessName() {
+            return null;
+        }
+
     };
 
     private InflexibleController_efi20ConnectionHandler handler;
