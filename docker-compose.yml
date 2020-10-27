@@ -4,7 +4,7 @@ networks:
     driver: overlay
 services:
   orchestrator:
-    image: flexiblepower/defpi-orchestrator:20.04
+    image: flexiblepower/defpi-orchestrator:20.04.1
     ports:
       - 8484:8080
       - 9999:9999
