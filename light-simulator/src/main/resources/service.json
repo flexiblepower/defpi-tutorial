@@ -42,9 +42,9 @@
         {
           "versionName": "http",
           "type": "proto",
-          "location": "https://raw.githubusercontent.com/defpi/interfaces/master/defpi/HTTP.proto",
-          "receives": [ "HTTPRequest" ],
-          "sends": [ "HTTPResponse" ]
+          "location": "https://raw.githubusercontent.com/defpi/interfaces/ba7a15330ced763b7ff4eb3721370cf24b55a0b6/defpi/Widget.proto",
+			"receives": [ "WidgetHTTPRequest" ],
+			"sends": [ "WidgetInfo", "WidgetHTTPResponse" ]
         }
       ]
     },

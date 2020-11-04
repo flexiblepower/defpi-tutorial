@@ -139,6 +139,10 @@ public class LightSimulator implements Service<LightSimulatorConfiguration> {
         return false;
     }
 
+    public double getPower() {
+        return this.currentPower;
+    }
+
     /**
      * @param instructionId
      * @param profile
