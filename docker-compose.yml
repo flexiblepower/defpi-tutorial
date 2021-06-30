@@ -4,10 +4,9 @@ networks:
     driver: overlay
 services:
   orchestrator:
-    image: flexiblepower/defpi-orchestrator:20.10
+    image: flexiblepower/defpi-orchestrator:21.06
     ports:
       - 8484:8080
-      - 9999:9999
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     links:
@@ -16,7 +15,6 @@ services:
     networks:
       - management
     environment:
-      - JVM_ARGUMENTS=-Xdebug -agentlib:jdwp=transport=dt_socket,address=9999,server=y,suspend=n
       - MONGO_HOST=mongo
       - MONGO_DATABASE=def-pi
       - MONGO_PORT=27017
@@ -24,7 +22,7 @@ services:
       - REGISTRY_URL=registry:5000
       - USE_SECURE_REGISTRY=false
   orchestrator-ui:
-    image: flexiblepower/defpi-orchestrator-ui:20.10
+    image: flexiblepower/defpi-orchestrator-ui:21.06
     ports:
       - 84:80
     environment:
